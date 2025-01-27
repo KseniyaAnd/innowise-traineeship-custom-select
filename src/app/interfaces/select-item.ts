@@ -1,7 +1,5 @@
 export interface SelectItem {
+    id: number;
     name: string;
-    image?: string;
-    email?: string;
-    role?: string;
-    selected?: boolean;
+    selected: boolean;
 }

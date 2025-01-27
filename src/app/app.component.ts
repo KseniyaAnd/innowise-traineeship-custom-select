@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {MultiSelectComponent} from "./components/multi-select/multi-select.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {SelectItem} from "./interfaces/select-item";
 
 @Component({
   selector: 'app-root',
@@ -13,19 +14,21 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
 export class AppComponent implements OnInit {
   title = 'innowise-traineeship-custom-select';
 
-  items: Array<any> = [
-    { name: 'Derin Chi', image: '', selected: false },
-    { name: 'Adeola Mikes', image: '', selected: false },
-    { name: 'Homelander', image: '', selected: false },
-    { name: 'Chris', image: '', selected: false },
-    { name: 'Derek', image: '', selected: false },
-    { name: 'Nancy', image: '', email: "nancy@example.com", role: 'developer', selected: false },
-
+  items: Array<SelectItem> = [
+    { id: 0, name: 'Derin Chi', selected: false },
+    { id: 1, name: 'Adeola Mikes', selected: false },
+    { id: 2, name: 'Homelander', selected: false },
+    { id: 3, name: 'Chris', selected: false },
+    { id: 4, name: 'Derek', selected: false },
+    { id: 5, name: 'Nancy', selected: false },
   ];
 
-  formControl = new FormControl<string[]>([]);
+  formControl = new FormControl<SelectItem>({disabled: false, id: 0, name: "", selected: false, value: undefined});
 
   ngOnInit(): void {
-    this.formControl.valueChanges.subscribe(console.log)
+    this.formControl.valueChanges.subscribe(selected => {
+      console.log('Selected items:', selected);
+    });
   }
+
 }

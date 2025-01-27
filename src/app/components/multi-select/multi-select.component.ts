@@ -2,14 +2,14 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    EventEmitter,
+    EventEmitter, forwardRef,
     HostListener,
     inject,
     Input,
     Output
 } from '@angular/core';
 import {SelectItem} from "../../interfaces/select-item";
-import {FormsModule} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {HighlightDirective} from "../../directives/highlight.directive";
 
 @Component({
@@ -21,18 +21,28 @@ import {HighlightDirective} from "../../directives/highlight.directive";
     ],
     templateUrl: './multi-select.component.html',
     styleUrl: './multi-select.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MultiSelectComponent),
+            multi: true
+        }
+    ]
 })
-export class MultiSelectComponent {
+export class MultiSelectComponent implements ControlValueAccessor {
     @Input() items: SelectItem[] = [];
     @Output() selectionChange = new EventEmitter<SelectItem[]>();
-
-    // TODO не searched символы должны быть бледными
 
     private elementRef = inject(ElementRef);
     isDropdownVisible = false;
     filteredItems: SelectItem[] = [];
     searchText: string = "";
+
+    private onChange: (value: string[]) => void = () => {
+    };
+    private onTouched: () => void = () => {
+    };
 
     ngOnInit(): void {
         this.filteredItems = this.items;
@@ -53,10 +63,31 @@ export class MultiSelectComponent {
     toggleItem(item: SelectItem, event: MouseEvent): void {
         event.stopPropagation();
         item.selected = !item.selected;
+        const selectedItems = this.items.filter(i => i.selected).map(i => i.name);
+        this.onChange(selectedItems);
         this.selectionChange.emit(this.items.filter(i => i.selected));
     }
 
     showDropdown(): void {
         this.isDropdownVisible = true;
+    }
+
+    writeValue(value: string[] | null | undefined): void {
+        if (Array.isArray(value)) {
+            this.items.forEach(item => {
+                item.selected = value.includes(item.name);
+            });
+        } else {
+            this.items.forEach(item => (item.selected = false));
+        }
+    }
+
+
+    registerOnChange(fn: (value: string[]) => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
     }
 }
