@@ -1,0 +1,33 @@
+<div class="multi-select-dropdown">
+    <div class="input-container">
+        <input
+                type="text"
+                (focus)="showDropdown()"
+                (input)="filterItems($event)"
+                [placeholder]="isDropdownVisible ? '': 'Select items...'"
+                [(ngModel)]="searchText"
+        >
+    </div>
+
+    @if (isDropdownVisible) {
+        <div class="dropdown-list">
+            @for (item of filteredItems; track item.name) {
+                <div
+                        class="dropdown-item"
+                        (click)="toggleItem(item, $event)"
+                >
+                    <span
+                            class="checkbox"
+                            [class.checked]="item.selected"
+                    >
+                        <span class="checkmark"></span>
+                    </span>
+                    <span appHighlight
+                          [searchWord]="searchText"
+                          [content]="item.name"
+                    >{{ item.name }}</span>
+                </div>
+            }
+        </div>
+    }
+</div>
