@@ -27,7 +27,16 @@ export class HighlightDirective implements OnChanges {
         }
 
         if (!this.searchWord || !this.searchWord.length) {
-            this.renderer.setProperty(this.el.nativeElement, 'innerHTML', this.content);
+            this.renderer.setProperty(
+                this.el.nativeElement,
+                'innerHTML',
+                this.content
+            );
+            this.renderer.setStyle(
+                this.el.nativeElement,
+                'color',
+                'black'
+            );
             return;
         }
 
