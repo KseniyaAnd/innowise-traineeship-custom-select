@@ -20,7 +20,9 @@
                             class="checkbox"
                             [class.checked]="item.selected"
                     >
-                        <span class="checkmark"></span>
+                         @if (item.selected) {
+                             <span class="checkmark">✓</span>
+                         }
                     </span>
                     <span appHighlight
                           [searchWord]="searchText"
